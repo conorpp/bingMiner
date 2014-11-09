@@ -7,10 +7,10 @@ while [ 1 ] ; do
         do
             echo "starting $i"
             t1=`date +%s`
-            casperjs --web-security=false worker.js $i d
-            casperjs --web-security=false worker.js $i m
+            casperjs  --web-security=false --disable-web-secuity worker.js $i d
+            casperjs  --web-security=false --disable-web-secuity worker.js $i m
             t2=`date +%s`
             echo "Time: " $(( $t2 - $t1 ))
         done
-    sleep $(( 60 * 60 ))
+    sleep $(( 60 * 60 * 2 ))  # go to sleep for two hours
 done

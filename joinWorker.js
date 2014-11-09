@@ -89,74 +89,18 @@ var work = function(cb){
         });
         console.log('ret ',r);
     });         
-    //               http://www.bing.com/rewards/signup/websignup?publ=BING&crea=EXP&programName=
-    casper.thenOpen('http://www.bing.com/rewards/signup/websignup?publ=BING&crea=DashboardSignIn&programName=SE',function(){
-        console.log('now a member');
-    });
 
 
-    casper.thenOpen('http://www.bing.com/',function(){
-
-
-    });
-
-    // search stuff
-    var que = 'where did the soda go';
-    var count = 0;
     casper.then(function(){
-        var i = 0;
-        var self = this;
-        var inter = setInterval(function(){
-            que = que || ('queue');
-            self.fill('form[action="/search"]', { q: que }, true);
-            // self.capture('login.png');
-            console.log('searching for: ', que);
-            // return random 4 letter word
-            function randWord(){
-                var a = 'abtchyplwwah'; 
-                var b = 'aeyuioee';
-                var c = 'eetleouiynmcc'
-                var d = 'mnbceeytplttk';
-                var w = [a,b,c,d];
-                var str = '';
-                for(var i=0; i++; i<4)
-                {
-                    var n = (w[i][Math.floor(Math.random() * w[i].length)]);
-                    n = n || 'e';
-                    str += n;
-                }
-
-            };
-            // Change que after first search
-            if (i++ != 0){
-                // call cb 
-                if (cb) cb(i);
-                que = casper.evaluate(function(){
-                    var l = $('p').text().replace(/\s{2,}/g, ' ').replace(/\n/g,' ').replace(/[\{\[\(\)\}\];\.\/\+\=\:\-]/g,'').split(' ');
-                    var q;
-                    var tries = 0;
-                    var ret = '';
-                    for (var i=0; i<2; i++){ do{
-                            q = l[ Math.floor(Math.random() * l.length)];
-                            if (tries++ > 15)
-                            {
-                                q = randWord() + ' ' + randWord();
-                                break;
-                            }
-                        }while(!(q.length > 0 && q.length < 15))
-                        ret += ' '+ q;
-                    }
-                    return ret || (randWord() + ' ' + randWord());
-                });
-            }else{
-                que = 'Astro Physics';
-            }
-        },2000);
+        console.log('going to leave in 5 s...');
+        setTimeout(function(){
+            
+            casper.exit();
+        }, 5000)
     });
 
     casper.run(function(){
         console.log('casper has run');
-
     });
 
 }
