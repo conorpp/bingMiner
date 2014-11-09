@@ -1,4 +1,6 @@
 
+//var desktop = 'Mozilla/5.0(Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11';
+var desktop = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36';
 var sys = require("system"),
     fs = require('fs'),
     _casper = require('casper');
@@ -14,7 +16,7 @@ var casper = _casper.create({
     viewportSize: {width: 1920, height: 1980},
     onError: function(err){  console.log('Err: ',err); },
     pageSettings: {
-        userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3'
+        userAgent: desktop
     },
     logLevel: "info"//,              // Only "info" level messages will be logged
     //verbose: true                  // log messages will be printed out to the console
@@ -65,7 +67,8 @@ var work = function(cb){
 
     });
     casper.thenOpen('http://www.bing.com/explore/rewards',function(){
-        if (!next){
+        //if (!next){
+        if (false){
             console.log('already a member');
             casper.thenBypass(1);
             return;
@@ -80,8 +83,9 @@ var work = function(cb){
             return 0;
         });
         console.log('ret ',r);
-    });
+    });         
     casper.thenOpen('http://www.bing.com/rewards/signup/websignup?publ=BING&crea=DashboardSignIn&programName=SE',function(){
+        console.log('now a member');
     });
 
 
@@ -151,7 +155,6 @@ var work = function(cb){
 
 }
 
-var desktop = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11';
 var mobile = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3';
 
 //  requests for mobile
@@ -163,12 +166,12 @@ if (casper.cli.args.length < 2){
 if (casper.cli.args[1] == 'm'){
     console.log('starting requests for mobile');
     casper.options.pageSettings.userAgent = mobile;
-    rounds = 20 * 1.5;
+    rounds = 20 * 1.15;
 }
 else if (casper.cli.args[1] == 'd'){
     console.log('starting requests for desktop');
     casper.options.pageSettings.userAgent = desktop;
-    rounds = 60 * 1.5;
+    rounds = 60 * 1.15;
 }
 else throw "Must specify d for desktop or m for mobile";
 
