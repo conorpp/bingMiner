@@ -12,8 +12,9 @@ var casper = _casper.create({
     loadPlugins: true         // use these settings
     },
     viewportSize: {width: 1920, height: 1980},
+    onError: function(err){  console.log('Err: ',err); },
     pageSettings: {
-        userAgent:''
+        userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3'
     },
     logLevel: "info"//,              // Only "info" level messages will be logged
     //verbose: true                  // log messages will be printed out to the console
@@ -43,7 +44,6 @@ var work = function(cb){
                 , true);
 
             var self = this;
-             self.capture('login.png');
 
             });
 
@@ -61,7 +61,6 @@ var work = function(cb){
             return 0;
         });
         var self = this;
-        self.capture('login.png');
 
 
     });
@@ -98,6 +97,7 @@ var work = function(cb){
         var i = 0;
         var self = this;
         var inter = setInterval(function(){
+            que = que || ('queue');
             self.fill('form[action="/search"]', { q: que }, true);
             // self.capture('login.png');
             console.log('searching for: ', que);
@@ -126,8 +126,7 @@ var work = function(cb){
                     var q;
                     var tries = 0;
                     var ret = '';
-                    for (var i=0; i<2; i++){
-                        do{
+                    for (var i=0; i<2; i++){ do{
                             q = l[ Math.floor(Math.random() * l.length)];
                             if (tries++ > 15)
                             {
@@ -137,7 +136,7 @@ var work = function(cb){
                         }while(!(q.length > 0 && q.length < 15))
                         ret += ' '+ q;
                     }
-                    return ret;
+                    return ret || (randWord() + ' ' + randWord());
                 });
             }else{
                 que = 'Astro Physics';
@@ -157,21 +156,27 @@ var mobile = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/
 
 //  requests for mobile
 casper.options.pageSettings.userAgent = desktop;
-console.log('starting requests for desktop');
-var mob = 1;
+var rounds = 0;
+if (casper.cli.args.length < 2){
+    throw "Usage: ./worker <username> <m|d>";    
+}
+if (casper.cli.args[1] == 'm'){
+    console.log('starting requests for mobile');
+    casper.options.pageSettings.userAgent = mobile;
+    rounds = 20 * 1.5;
+}
+else if (casper.cli.args[1] == 'd'){
+    console.log('starting requests for desktop');
+    casper.options.pageSettings.userAgent = desktop;
+    rounds = 60 * 1.5;
+}
+else throw "Must specify d for desktop or m for mobile";
+
 work(function(num){
-    if(num > 60 * 1.5)
+    if(num > rounds)
     {
-       if (mob == 1){
-           console.log('starting requests for mobile');
-            mob = 0;
-            casper.options.pageSettings.userAgent = mobile;
-       }
-       if (num > 20 * 1.5 + 60 * 1.5)
-        {
-            console.log('finished'); 
-            casper.exit();
-        }
+        console.log('finished'); 
+        casper.exit();
     }
 });
 

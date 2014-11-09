@@ -1,0 +1,10 @@
+#!/bin/bash
+
+names=$(cat /home/conorpp/bingMiner/names)
+
+for i in $names
+    do
+        echo "starting $i"
+        casperjs --web-security=false worker.js $i m
+        casperjs --web-security=false worker.js $i d
+    done
