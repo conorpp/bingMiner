@@ -37,7 +37,7 @@ var work = function(cb){
 
     // login
     casper.start('https://login.live.com/login.srf', function(){
-
+            console.log('filling out login form');
             this.fill('form[name="f1"]'
                 , { 
                     login: un
@@ -47,6 +47,7 @@ var work = function(cb){
 
             var self = this;
 
+            console.log('filled out login form');
             });
 
     // go to bing
@@ -67,23 +68,22 @@ var work = function(cb){
 
     });
     casper.thenOpen('http://www.bing.com/explore/rewards',function(){
-        //if (!next){
-        if (false){
-            console.log('already a member');
-            casper.thenBypass(1);
-            return;
-        }else{ console.log('joining bing rewards..'); }
-        var r = this.evaluate(function(){
+            var r = this.evaluate(function(){
             if ($('a[href="/rewards/signup/websignup"]').length)
             {
                 $('a[href="/rewards/signup/websignup"]').trigger('click');
+                $('a[href="/rewards/signup/websignup"]').click();
+                $('a[href="/rewards/signup/websignup"]').click();
+                $('a[href="/rewards/signup/websignup"]').click();
+                $('a[href="/rewards/signup/websignup"]').click();
+                $('a[href="/rewards/signup/websignup"]').click();
                 $('a[href="/rewards/signup/websignup"]').click();
                 console.log('clicked the sign up button');
                 return 1;
             }
             else
             {
-                console.log("no sign up button exists");
+                console.log("no sign up button exists!");
             }
             return 0;
         });
@@ -92,11 +92,15 @@ var work = function(cb){
 
 
     casper.then(function(){
-        console.log('going to leave in 5 s...');
-        setTimeout(function(){
-            
-            casper.exit();
-        }, 5000)
+        setInterval(function(){
+            var indx = casper.evaluate(function(){
+                return $('body').text().indexOf('Earn credits searching the web with Bing');
+            });
+            if (indx == -1){
+                console.log('joined!');
+                casper.exit();
+            }
+        }, 1000);
     });
 
     casper.run(function(){

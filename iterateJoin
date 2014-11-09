@@ -1,0 +1,12 @@
+#!/bin/bash
+
+names=$(cat /home/conorpp/bingMiner/names)
+
+for i in $names
+    do
+        echo "starting $i"
+        t1=`date +%s`
+        casperjs  --web-security=false --disable-web-secuity joinWorker.js $i d
+        t2=`date +%s`
+        echo "Time: " $(( $t2 - $t1 ))
+    done
