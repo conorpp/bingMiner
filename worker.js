@@ -22,6 +22,7 @@ var casper = _casper.create({
     //verbose: true                  // log messages will be printed out to the console
 });
 
+var logoutLink = '';
 
 var work = function(cb){
 
@@ -50,17 +51,23 @@ var work = function(cb){
             });
 
     // go to bing
-    var next = 0;
     // join bing rewards if havent. only works for desktop view
     casper.thenOpen('http://www.bing.com/rewards/dashboard',function(){
 
-        next = this.evaluate(function(){
+        logoutLink = this.evaluate(function(){
             // console.log($('.header').text());
             if ($('.header').text().indexOf('You are not signed in to Bing Rewards') != -1)
             {
-                return 1;
+                return '';
             }
-            return 0;
+            var links = $('#b_idProviders a');
+            var ret = '';
+            links.each(function(){
+                if ($(this).attr('href').indexOf('/fd/auth/signout') != -1){
+                    ret= $(this).attr('href');
+                    console.log('sign out link is ', ret);
+                }
+            });
         });
         var self = this;
 
@@ -156,7 +163,6 @@ var work = function(cb){
 
     casper.run(function(){
         console.log('casper has run');
-
     });
 
 }
@@ -182,11 +188,18 @@ else if (casper.cli.args[1] == 'd'){
 }
 else throw "Must specify d for desktop or m for mobile";
 
+var exit = function(){
+    casper.open(logoutLink); 
+    setTimeout(function(){
+        casper.exit();
+    },2000);
+}
+
 work(function(num){
     if(num > rounds)
     {
         console.log('finished'); 
-        casper.exit();
+        exit();
     }
 });
 
